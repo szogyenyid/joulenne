@@ -7,24 +7,36 @@
 INTERVAL=15 # seconds
 CYCLES=1
 VERBOSE=false
+EXIT=0
+
+### Add help contents
+print_usage() {
+    echo "Usage: $0 [--interval SECONDS] [--cycles COUNT] [--test-dir DIRECTORY] [--runner COMMAND] [--verbose] [--help]"
+    echo "Options:"
+    echo "  --interval SECONDS     Specify the interval in seconds (default: 15)"
+    echo "  --cycles COUNT         Specify the number of cycles (default: 1)"
+    echo "  --test-dir DIRECTORY   Specify the test directory"
+    echo "  --runner COMMAND       Specify the runner command"
+    echo "  --verbose              Enable verbose mode"
+    echo "  --help                 Display this help message and exit"
+}
 
 ### Parse command-line options
 
 while [[ "$#" -gt 0 ]]; do
   case $1 in
+    --help) print_usage; exit 0 ;; # Print usage instructions and exit
     --interval) INTERVAL="$2"; shift ;;
     --cycles) CYCLES="$2"; shift ;;
     --test-dir) TEST_DIR="$2"; shift ;;
     --runner) RUNNER="$2"; shift ;;
     --verbose) VERBOSE=true ;;
-    *) echo "Unknown option: $1"; exit 1 ;;
+    *) echo "Error: unknown option: $1"; EXIT=1 ;;
   esac
   shift
 done
 
 ### Check if script can run
-
-EXIT=0
 
 if ! command -v turbostat &> /dev/null; then
     echo "Error: turbostat could not be found. To use Joulenne, please install turbostat and add it to your PATH."
@@ -47,6 +59,7 @@ if [[ -z "$TEST_DIR" ]]; then
 fi
 
 if [[ $EXIT -eq 1 ]]; then
+    echo "Use --help to see the help page."; 
     exit 1
 fi
 
