@@ -1,10 +1,10 @@
 # Joulenne
 
-Joulenne is a simple turbostat-based energy consumption monitoring tool.
+Joulenne is a simple turbostat-based energy consumption measurement tool.
 
 ## The purpose of Joulenne
 
-Joulenne aims to provide a simple yet effective method for monitoring energy usage on Linux systems using turbostat. It's particularly useful for understanding the energy consumption of various tasks and processes, aiding in optimization and efficiency efforts.
+Joulenne aims to provide a simple yet effective method for measuring energy usage of different processes on Linux systems using turbostat. It's particularly useful for understanding the energy consumption of various tasks and processes, aiding in optimization and efficiency efforts.
 
 ## Intallation
 
@@ -77,6 +77,16 @@ To get accurate energy consumption measurements, it's essential to write effecti
 - are well-structured and do not introduce unnecessary overhead.
 - are located in the specified test directory.
 - can be compared with each other, so the results can be interpreted effectively.
+
+### Important notes
+
+#### On turbostat and accuracy
+
+Turbostat cannot measure the energy consumption of a single process, it just gives a status about the whole CPU. To make measurements as accurate as possible, try to keep the CPU usage at a constant level. It's inevitable to have noise in the data, but having a constant noise, and choosing ideal values for interval and cycle can minimuze the error of the measurement.
+
+#### On the actual numbers
+
+Joulenne is not intented to determine the actual energy consumption of complex applications. It's original purpose is identifying coding best practices from an energy-efficiency point of view. The actual energy consumption may vary from hardware to hardware, the goal of Joulenne is comparison of processes on the same host. 
 
 ## License
 
