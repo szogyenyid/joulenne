@@ -5,5 +5,5 @@ while (true) {
     for ($i=0; $i<$c; $i++) {
         $a = $c;
     }
-    sleep(1);
+    usleep(10_000);
 }
