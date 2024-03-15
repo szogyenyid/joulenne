@@ -7,16 +7,18 @@
 INTERVAL=15 # seconds
 CYCLES=1
 VERBOSE=false
+CSV=false
 EXIT=0
 
 ### Add help contents
 print_usage() {
     echo "Usage: $0 [--interval SECONDS] [--cycles COUNT] [--test-dir DIRECTORY] [--runner COMMAND] [--verbose] [--help]"
     echo "Options:"
-    echo "  --interval SECONDS     Specify the interval in seconds (default: 15)"
+    echo "  --csv                  Output in CSV format"
     echo "  --cycles COUNT         Specify the number of cycles (default: 1)"
-    echo "  --test-dir DIRECTORY   Specify the test directory"
+    echo "  --interval SECONDS     Specify the interval in seconds (default: 15)"
     echo "  --runner COMMAND       Specify the runner command"
+    echo "  --test-dir DIRECTORY   Specify the test directory"
     echo "  --verbose              Enable verbose mode"
     echo "  --help                 Display this help message and exit"
 }
@@ -26,10 +28,11 @@ print_usage() {
 while [[ "$#" -gt 0 ]]; do
   case $1 in
     --help) print_usage; exit 0 ;; # Print usage instructions and exit
-    --interval) INTERVAL="$2"; shift ;;
+    --csv) CSV=true ;;
     --cycles) CYCLES="$2"; shift ;;
-    --test-dir) TEST_DIR="$2"; shift ;;
+    --interval) INTERVAL="$2"; shift ;;
     --runner) RUNNER="$2"; shift ;;
+    --test-dir) TEST_DIR="$2"; shift ;;
     --verbose) VERBOSE=true ;;
     *) echo "Error: unknown option: $1"; EXIT=1 ;;
   esac
@@ -118,7 +121,9 @@ NUM_TESTS=$((NUM_FILES + 1))
 SUM_TIME=$((NUM_TESTS * TIMEOUT_S))
 
 END_TIME=$(date -d "+$SUM_TIME seconds" +"%Y-%m-%d %H:%M:%S")
-echo "Expected finish: $END_TIME"
+if [ "$CSV" = false ]; then
+    echo "Expected finish: $END_TIME"
+fi
 
 ### Measure idle energy usage
 
@@ -140,6 +145,13 @@ for filename in $TEST_PATH/*; do
 done
 print_message ""
 
-for ((i=0; i<${#TEST_RESULTS[@]}; i++)); do
-  echo "${TEST_NAMES[i]}: ${TEST_RESULTS[i]} Joules"
-done
+if [ "$CSV" = true ]; then
+    echo "Test,Energy usage (Joules)"
+    for ((i=0; i<${#TEST_RESULTS[@]}; i++)); do
+        echo "${TEST_NAMES[i]},${TEST_RESULTS[i]}"
+    done
+else 
+    for ((i=0; i<${#TEST_RESULTS[@]}; i++)); do
+        echo "${TEST_NAMES[i]}: ${TEST_RESULTS[i]} Joules"
+    done
+fi
