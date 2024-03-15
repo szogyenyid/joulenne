@@ -80,7 +80,7 @@ TEST_NAMES=()
 TEST_RESULTS=()
 
 print_message() {
-  if [ "$VERBOSE" = true ]; then
+  if [[ "$VERBOSE" = true && "$CSV" = false ]]; then
     echo "$1"
   fi
 }
@@ -139,6 +139,7 @@ if [ "$NO_SYS" = false ]; then
 fi
 
 ### Measure energy usage of test files
+
 for filename in $TEST_PATH/*; do
     basefilename=$(basename "$filename")
     filename_no_extension="${basefilename%.*}"
@@ -148,6 +149,9 @@ for filename in $TEST_PATH/*; do
     TEST_NAMES+=($filename_no_extension)
     TEST_RESULTS+=($result)
 done
+
+## Calculate and output results
+
 print_message ""
 
 if [ "$CSV" = true ]; then
