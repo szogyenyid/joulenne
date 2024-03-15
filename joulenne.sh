@@ -26,18 +26,23 @@ done
 
 EXIT=0
 
+if ! command -v turbostat &> /dev/null; then
+    echo "Error: turbostat could not be found. To use Joulenne, please install turbostat and add it to your PATH."
+    EXIT=1
+fi
+
 if ! [ $(id -u) = 0 ]; then
-   echo "The script need to be run as root." >&2
+   echo "Error: the script need to be run as root." >&2
    EXIT=1
 fi
 
 if [[ -z "$RUNNER" ]]; then
-  echo "Error: runner is not specified."
+  echo "Error: runner is not specified. Please use --runner to specify one."
   EXIT=1
 fi
 
 if [[ -z "$TEST_DIR" ]]; then
-  echo "Error: test directory is not specified."
+  echo "Error: test directory is not specified. Please use --test-dir to specify one."
   EXIT=1
 fi
 
