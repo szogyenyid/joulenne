@@ -6,17 +6,19 @@
 
 INTERVAL=15 # seconds
 CYCLES=1
+NO_SYS=false
 VERBOSE=false
 CSV=false
 EXIT=0
 
 ### Add help contents
 print_usage() {
-    echo "Usage: $0 [--interval SECONDS] [--cycles COUNT] [--test-dir DIRECTORY] [--runner COMMAND] [--verbose] [--help]"
+    echo "Usage: $0 [--interval SECONDS] [--cycles COUNT] [--test-dir DIRECTORY] [--runner COMMAND] [--nosys] [--csv] [--verbose] [--help]"
     echo "Options:"
     echo "  --csv                  Output in CSV format"
     echo "  --cycles COUNT         Specify the number of cycles (default: 1)"
     echo "  --interval SECONDS     Specify the interval in seconds (default: 15)"
+    echo "  --nosys                Skip the measurement of system idle energy"
     echo "  --runner COMMAND       Specify the runner command"
     echo "  --test-dir DIRECTORY   Specify the test directory"
     echo "  --verbose              Enable verbose mode"
@@ -31,6 +33,7 @@ while [[ "$#" -gt 0 ]]; do
     --csv) CSV=true ;;
     --cycles) CYCLES="$2"; shift ;;
     --interval) INTERVAL="$2"; shift ;;
+    --nosys) NO_SYS=true ;;
     --runner) RUNNER="$2"; shift ;;
     --test-dir) TEST_DIR="$2"; shift ;;
     --verbose) VERBOSE=true ;;
@@ -127,11 +130,13 @@ fi
 
 ### Measure idle energy usage
 
-print_message "Measuring system idle energy usage (${RUNNING_TIME}s)"
-output=$(timeout $TIMEOUT bash -c "sudo turbostat --Summary --quiet --Joules --show Pkg_J --interval ${INTERVAL};")
-result=$(calculate_average "$output")
-TEST_NAMES+=("sys")
-TEST_RESULTS+=($result)
+if [ "$NO_SYS" = false ]; then
+    print_message "Measuring system idle energy usage (${RUNNING_TIME}s)"
+    output=$(timeout $TIMEOUT bash -c "sudo turbostat --Summary --quiet --Joules --show Pkg_J --interval ${INTERVAL};")
+    result=$(calculate_average "$output")
+    TEST_NAMES+=("sys")
+    TEST_RESULTS+=($result)
+fi
 
 ### Measure energy usage of test files
 for filename in $TEST_PATH/*; do

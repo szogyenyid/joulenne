@@ -43,6 +43,8 @@ So if you want your tests to run for 60 seconds each, and you would like to get 
 sudo ./joulenne.sh (...) --interval 10 --cycles 6
 ```
 
+The results will return the average energy consumption of cycles (each cycle taking interval seconds).
+
 #### Exporting to CSV
 
 You can import the results directly to CSV, to do so, just use the `--csv` flag and redirect the output to a file, eg.:
@@ -58,6 +60,7 @@ Joulenne provides the following command-line options:
 - `--csv`: Output the results in CSV format.
 - `--cycles COUNT`: Specify the number of cycles (default: 1).
 - `--interval SECONDS`: Specify the interval in seconds (default: 15).
+- `--nosys`: Skip the measurement of idle energy consumption.
 - `--runner COMMAND`: Specify the command for executing the test files.
 - `--test-dir DIRECTORY`: Specify the directory containing the test files.
 - `--verbose`: Enable verbose mode.
