@@ -1,11 +1,11 @@
 <?php
 
 $a = range('A', 'z');
-$d = '';
 
 while (true) {
+    $d = '';
     foreach ($a as $letter) {
         $d .= $letter . '-';
     }
-    usleep(1_000);
+    usleep(100);
 }
